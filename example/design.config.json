@@ -1,0 +1,11 @@
+{
+  "title": "Example",
+  "system": {
+    "dir": "system",
+    "namespace": "Ex",
+    "install": "canvas/ds/ex"
+  },
+  "canvas": {
+    "dir": "canvas"
+  }
+}

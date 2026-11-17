@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Task</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/ex/tokens.css">
+<link rel="stylesheet" href="ds/ex/components/bundle.css">
+<script src="ds/ex/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:var(--ground)}
+.page{box-sizing:border-box;max-width:760px;margin:0 auto;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);color:var(--ink);font-family:var(--font-sans)}
+.back{color:var(--accent);text-decoration:none}
+.head{display:flex;align-items:center;gap:var(--space-3)}.head h1{flex:1;margin:0}
+dl{display:grid;grid-template-columns:120px 1fr;gap:var(--space-2) var(--space-4);margin:0}
+dt{color:var(--ink-2)}dd{margin:0}
+ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:var(--space-1)}
+.actions{display:flex;gap:var(--space-2);justify-content:flex-end}
+</style>
+</helmet>
+<div class="page text-body">
+
+<a class="back" href="Tasks.dc.html">← Tasks</a>
+
+<div class="head">
+<h1 class="text-title">Write the onboarding checklist</h1>
+<x-import component-from-global-scope="Ex.Badge" tone="{{tone}}">{{stateLabel}}</x-import>
+</div>
+
+<x-import component-from-global-scope="Ex.Card" title="Details">
+<dl>
+<dt>Id</dt><dd class="text-code">TASK-128</dd>
+<dt>Owner</dt><dd>Sam Rivera</dd>
+<dt>Due</dt><dd>Friday</dd>
+<dt>State</dt><dd>{{stateLabel}}</dd>
+</dl>
+</x-import>
+
+<x-import component-from-global-scope="Ex.Card" title="Steps" collapsible="{{ true }}">
+<ol><sc-for list="{{steps}}" as="s"><li>{{s}}</li></sc-for></ol>
+</x-import>
+
+<div class="actions">
+<x-import component-from-global-scope="Ex.Button" href="Tasks.dc.html">Cancel</x-import>
+<x-import component-from-global-scope="Ex.Button" variant="primary" on-click="{{toggle}}">{{actionLabel}}</x-import>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"state":{"editor":"enum","options":["Open","Done"],"default":"Open","section":"State"},"$preview":{"width":1200,"height":800}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { done: props.state === 'Done' };
+  }
+
+  componentDidUpdate(prev) { if (prev.state !== this.props.state) this.setState({ done: this.props.state === 'Done' }); }
+
+  renderVals() {
+    var self = this, done = this.state.done;
+    return {
+      tone: done ? 'positive' : 'warning',
+      stateLabel: done ? 'Done' : 'Due soon',
+      actionLabel: done ? 'Reopen' : 'Mark done',
+      toggle: function () { self.setState({ done: !self.state.done }); },
+      steps: ['List what a new teammate needs on day one', 'Ask two recent joiners what they missed', 'Put it in the handbook', 'Share it with the team']
+    };
+  }
+}
+</script>
+</body>
+</html>

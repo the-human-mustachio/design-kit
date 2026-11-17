@@ -1,0 +1,50 @@
+{
+  "name": "design-kit",
+  "version": "0.1.0",
+  "description": "Design canvases and design systems kept as files: boards in the .dc.html format played live on a wall, and a design system on open formats (W3C design tokens, Component Story Format, Markdown) with a page of its own.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/the-human-mustachio/design-kit.git"
+  },
+  "homepage": "https://github.com/the-human-mustachio/design-kit#readme",
+  "bugs": {
+    "url": "https://github.com/the-human-mustachio/design-kit/issues"
+  },
+  "type": "module",
+  "bin": {
+    "design-kit": "bin/design-kit.mjs"
+  },
+  "exports": {
+    ".": "./index.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "runtime",
+    "viewer",
+    "vendor",
+    "index.mjs"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "dtcg",
+    "storybook",
+    "csf",
+    "prototype",
+    "canvas"
+  ],
+  "dependencies": {
+    "esbuild": "0.25.12",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
+}

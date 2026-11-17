@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design canvas</title>
+<link rel="stylesheet" href="/viewer/viewer.css">
+</head>
+<body>
+<header class="bar">
+  <button type="button" class="tool" id="navToggle" aria-pressed="true" aria-controls="sidebar" title="Pages and the design system">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3h11a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM6 3v10"/></svg><span class="sr">Pages and the design system</span>
+  </button>
+  <div class="brand" id="title">Design canvas</div>
+  <div class="bar-where" id="where" aria-live="polite"></div>
+  <div class="tools">
+    <span class="save" id="save" role="status" aria-live="polite"></span>
+    <button type="button" class="tool" id="addNote" title="Add a sticky note (N)">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.5h10v7l-3.5 4H3z M9.5 13.5v-4h3.5"/></svg><span class="sr">Add a note</span>
+    </button>
+    <button type="button" class="tool" id="commentTool" aria-pressed="false" title="Comment: click the canvas or a board to pin one (C)">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z"/><path d="M6 7.5v0M8 7.5v0M10 7.5v0"/></svg>
+      <span class="sr">Comment</span>
+    </button>
+    <button type="button" class="tool" id="drawerToggle" aria-pressed="false" aria-controls="drawer" title="This page's comments">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 4.5h8M5.5 8h8M5.5 11.5h8M2.5 4.5v0M2.5 8v0M2.5 11.5v0"/></svg><span class="sr">This page's comments</span><span class="badge" id="commentCount"></span>
+    </button>
+    <button type="button" class="tool" id="hand" aria-pressed="false" title="Pan with the mouse over boards (H, or hold Space)">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 8V3.5a1 1 0 0 1 2 0V7m0-3.5v-1a1 1 0 0 1 2 0V7m0-4a1 1 0 0 1 2 0V7.5m0-2.5a1 1 0 0 1 2 0v4.5a5 5 0 0 1-5 5h-.4a4.5 4.5 0 0 1-3.6-1.8L2.3 9.8a1 1 0 0 1 1.5-1.3l1.7 1.5"/></svg>
+      <span class="sr">Pan</span>
+    </button>
+    <div class="zoom" role="group" aria-label="Zoom">
+      <button type="button" class="tool" id="zoomOut" title="Zoom out (−)" aria-label="Zoom out"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg></button>
+      <button type="button" class="tool zoom-label" id="zoomLabel" title="Zoom to 100% (1)">100%</button>
+      <button type="button" class="tool" id="zoomIn" title="Zoom in (+)" aria-label="Zoom in"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9M8 3.5v9"/></svg></button>
+    </div>
+    <button type="button" class="tool text" id="fit" title="Fit the page (0)">Fit</button>
+  </div>
+</header>
+
+<div class="shell">
+<nav class="sidebar" id="sidebar" aria-label="Pages and the design system">
+  <div class="nav-head">Pages</div>
+  <div class="nav-pages" id="navPages"></div>
+  <div class="nav-head" id="navDsHead" hidden>Design system</div>
+  <div class="nav-ds" id="navDs" hidden></div>
+</nav>
+
+<main class="stage" id="stage" aria-label="Canvas">
+  <div class="wall" id="wall"></div>
+  <div class="layer" id="labels"></div>
+  <div class="shield" id="shield" hidden></div>
+  <div class="layer top" id="top"></div>
+  <aside class="drawer" id="drawer" hidden aria-label="Comments on this page"></aside>
+  <p class="hint" id="hint">Drag the background to move · ⌘/Ctrl + scroll to zoom · drag a board's title to move it · double-click a note to write · ⌘Z undoes</p>
+</main>
+
+<section class="ds" id="ds" hidden aria-label="Design system">
+  <div class="ds-main"></div>
+</section>
+</div>
+
+<section class="focus" id="focus" hidden aria-label="Board">
+  <header class="focus-bar">
+    <button type="button" class="tool text back" id="back" title="Back to the canvas (Esc)">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg>Canvas
+    </button>
+    <div class="focus-title"><b id="fTitle"></b><span id="fPage"></span></div>
+    <div class="focus-tools">
+      <div class="stepper" role="group" aria-label="Boards on this page">
+        <button type="button" class="tool" id="prev" aria-label="Previous board"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg></button>
+        <span id="fPos" class="pos"></span>
+        <button type="button" class="tool" id="next" aria-label="Next board"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg></button>
+      </div>
+      <div class="seg" id="fWidth" role="radiogroup" aria-label="Width"></div>
+      <span class="scale" id="fScale"></span>
+      <button type="button" class="tool text play-btn" id="fPlay" title="Play this board alone in the window">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z"/></svg>Play
+      </button>
+      <a class="tool text" id="newTab" target="_blank" rel="noopener" title="This board on its own, with these tweaks">New tab</a>
+      <button type="button" class="tool text" id="sideToggle" aria-pressed="true" aria-controls="side">Panel</button>
+    </div>
+  </header>
+  <div class="focus-body">
+    <div class="focus-area" id="fArea"><div class="frame-wrap" id="fWrap"></div></div>
+    <aside class="side" id="side" aria-label="Tweaks and comments">
+      <div class="side-tabs" role="tablist">
+        <button type="button" role="tab" id="tabTweaks" data-tab="tweaks">Tweaks</button>
+        <button type="button" role="tab" id="tabComments" data-tab="comments">Comments <span class="badge" id="boardCount"></span></button>
+      </div>
+      <div class="side-body" id="sideBody"></div>
+    </aside>
+  </div>
+</section>
+
+<section class="player" id="play" hidden aria-label="Playing">
+  <div class="frame-wrap" id="pWrap"></div>
+  <div class="play-hot" id="pHot"></div>
+  <div class="play-bar" id="pBar">
+    <b id="pTitle"></b>
+    <button type="button" class="tool" id="pPrev" aria-label="Previous board"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg></button>
+    <button type="button" class="tool" id="pNext" aria-label="Next board"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg></button>
+    <button type="button" class="tool text" id="pExit" title="Stop playing (Esc)">Exit</button>
+  </div>
+</section>
+
+<script src="/viewer/system.js"></script>
+<script src="/viewer/viewer.js"></script>
+</body>
+</html>

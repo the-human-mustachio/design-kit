@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tasks</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/ex/tokens.css">
+<link rel="stylesheet" href="ds/ex/components/bundle.css">
+<script src="ds/ex/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:var(--ground)}
+.page{box-sizing:border-box;max-width:960px;margin:0 auto;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);color:var(--ink);font-family:var(--font-sans)}
+.top{display:flex;align-items:center;gap:var(--space-3)}.top h1{flex:1}
+.tabs{display:flex;gap:var(--space-1)}
+.tab{border:1px solid transparent;background:none;border-radius:var(--radius-md);padding:6px 12px;font:inherit;color:var(--ink-2);cursor:pointer}
+.tab.on{background:var(--surface);border-color:var(--line);color:var(--ink);font-weight:600}
+.rows{list-style:none;margin:0;padding:0}
+.row{display:grid;grid-template-columns:96px 1fr auto 96px;align-items:center;gap:var(--space-3);padding:var(--space-2) 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.num{color:var(--ink-2)}
+.name{color:var(--ink);text-decoration:none}.name:hover{color:var(--accent)}
+.empty{margin:0;color:var(--ink-2)}
+</style>
+</helmet>
+<div class="page text-body">
+
+<header class="top">
+<h1 class="text-title" style="margin: 0">Tasks</h1>
+<span class="text-code" style="color: var(--ink-2)">{{countLabel}}</span>
+<x-import component-from-global-scope="Ex.Button" variant="primary" href="Task.dc.html">New task</x-import>
+</header>
+
+<nav class="tabs" aria-label="Show">
+<sc-for list="{{tabs}}" as="t"><button type="button" class="{{t.className}}" aria-pressed="{{t.on}}" on-click="{{t.pick}}">{{t.label}}</button></sc-for>
+</nav>
+
+<x-import component-from-global-scope="Ex.Card" title="{{cardTitle}}">
+<sc-if value="{{hasRows}}">
+<ul class="rows">
+<sc-for list="{{rows}}" as="r"><li class="row">
+<span class="text-code num">{{r.id}}</span>
+<a class="name" href="Task.dc.html">{{r.title}}</a>
+<x-import component-from-global-scope="Ex.Badge" tone="{{r.tone}}">{{r.state}}</x-import>
+<x-import component-from-global-scope="Ex.Button" size="sm" variant="ghost" on-click="{{r.toggle}}">{{r.action}}</x-import>
+</li></sc-for>
+</ul>
+</sc-if>
+<sc-if value="{{!hasRows}}"><p class="empty">{{emptyLine}}</p></sc-if>
+</x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"show":{"editor":"enum","options":["All","Open","Done"],"default":"All","section":"State"},"empty":{"editor":"boolean","default":false,"section":"State"},"$preview":{"width":1200,"height":800}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = this.startOf(props);
+  }
+
+  // The tab follows the Show tweak, and the tasks start as written, whenever a tweak changes.
+  startOf(p) { return { show: p.show ?? 'All', done: { 'TASK-124': true, 'TASK-121': true } }; }
+
+  componentDidUpdate(prev) { if (prev.show !== this.props.show || prev.empty !== this.props.empty) this.setState(this.startOf(this.props)); }
+
+  tasks() {
+    if (this.props.empty) return [];
+    return [
+      { id: 'TASK-128', title: 'Write the onboarding checklist' },
+      { id: 'TASK-127', title: 'Review the pricing page copy' },
+      { id: 'TASK-126', title: 'Book the team offsite venue' },
+      { id: 'TASK-124', title: 'Move the docs to the new site' },
+      { id: 'TASK-121', title: 'Close out the Q3 survey' }
+    ];
+  }
+
+  renderVals() {
+    var self = this, st = this.state;
+    var all = this.tasks().map(function (t) { return Object.assign({ done: !!st.done[t.id] }, t); });
+    var shown = all.filter(function (t) { return st.show === 'All' || (st.show === 'Done') === t.done; });
+    var open = all.filter(function (t) { return !t.done; }).length;
+    return {
+      countLabel: open + ' open of ' + all.length,
+      tabs: ['All', 'Open', 'Done'].map(function (label) {
+        return { label: label, on: st.show === label, className: st.show === label ? 'tab on' : 'tab', pick: function () { self.setState({ show: label }); } };
+      }),
+      cardTitle: st.show === 'All' ? 'Every task' : st.show + ' tasks',
+      hasRows: shown.length > 0,
+      emptyLine: all.length ? 'No ' + st.show.toLowerCase() + ' tasks.' : 'No tasks yet. Create one to start.',
+      rows: shown.map(function (t) {
+        return {
+          id: t.id, title: t.title, tone: t.done ? 'positive' : 'neutral', state: t.done ? 'Done' : 'Open', action: t.done ? 'Reopen' : 'Mark done',
+          toggle: function () { var d = Object.assign({}, self.state.done); d[t.id] = !t.done; self.setState({ done: d }); }
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

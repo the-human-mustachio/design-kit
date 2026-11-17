@@ -1,0 +1,4 @@
+/* The frame every story sits in. */
+.pv { padding: 16px; display: flex; flex-direction: column; gap: 14px; background: var(--ground); font-family: var(--font-sans); color: var(--ink); }
+.pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.pv-col { display: flex; flex-direction: column; gap: 12px; max-width: 720px; }

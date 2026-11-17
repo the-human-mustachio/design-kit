@@ -1,0 +1,5 @@
+# What the build writes: the server and `design-kit build` make them again.
+system/dist/
+canvas/ds/
+# What the viewer writes as you comment.
+comments.json

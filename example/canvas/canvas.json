@@ -1,0 +1,21 @@
+{
+  "v": 3,
+  "title": "Example",
+  "launch": { "view": "canvas", "page": "screens" },
+  "pages": [
+    { "id": "screens", "name": "Screens" },
+    { "id": "format", "name": "The format" }
+  ],
+  "boards": {
+    "Tasks.dc.html": { "x": 0, "y": 0, "w": 1200, "h": 800, "title": "Tasks — list", "expand": "fill", "is_interactive": true, "page": "screens" },
+    "Task.dc.html": { "x": 1280, "y": 0, "w": 1200, "h": 800, "title": "Task — detail", "expand": "fill", "is_interactive": true, "page": "screens" },
+    "Features.dc.html": { "x": 0, "y": 0, "w": 900, "h": 1100, "title": "What a board can do", "is_interactive": true, "page": "format" }
+  },
+  "order": ["Tasks.dc.html", "Task.dc.html", "Features.dc.html"],
+  "notes": {
+    "about-screens": {
+      "x": 0, "y": 860, "w": 420, "page": "screens", "fill": "blue",
+      "text": "Two screens of a small task app. Play either: the rows link to the detail, and its Cancel goes back."
+    }
+  }
+}
