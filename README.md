@@ -12,12 +12,9 @@ Everything runs on your machine: one Node process, no account, no connection. It
 React.
 
 ```bash
-npm install --save-dev https://github.com/the-human-mustachio/design-kit/releases/download/v0.1.0/design-kit-0.1.0.tgz
+npm install --save-dev @_mustachio/design-kit
 npx design-kit serve            # http://127.0.0.1:4400/
 ```
-
-It isn't on npm yet. Each release's package is attached to its [GitHub release](https://github.com/the-human-mustachio/design-kit/releases):
-the same files `npm publish` would send, which npm records in the lockfile with their checksum.
 
 To try it, clone this repository and run `npm install`, then `npx design-kit serve --config example/design.config.json`.
 `example/` is a small project with three components and three boards. It is also a starting point to copy.
@@ -185,7 +182,7 @@ This project is not affiliated with Anthropic. The runtime is its own implementa
 
 ## As a library
 
-`import { … } from 'design-kit'` gives what the commands are made of, for a project's own scripts and checks:
+`import { … } from '@_mustachio/design-kit'` gives what the commands are made of, for a project's own scripts and checks:
 
 | Area | What it provides |
 |---|---|
@@ -208,9 +205,9 @@ This project is not affiliated with Anthropic. The runtime is its own implementa
 
 Node 22 or later.
 
-To release:
-1. Raise `version` in `package.json` and run `npm pack`.
-2. Attach the `.tgz` to a GitHub release tagged `v<version>`.
+To release, raise `version` in `package.json`, commit, tag the commit `v<version>`, and push both. The Release
+workflow (`.github/workflows/release.yml`) tests the tag and publishes it to npm through npm's trusted publishing, with
+no token, and npm records the build's provenance.
 
 ## Licence
 

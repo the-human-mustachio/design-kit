@@ -1,6 +1,6 @@
 {
-  "name": "design-kit",
-  "version": "0.1.0",
+  "name": "@_mustachio/design-kit",
+  "version": "0.1.1",
   "description": "Design canvases and design systems kept as files: boards in the .dc.html format played live on a wall, and a design system on open formats (W3C design tokens, Component Story Format, Markdown) with a page of its own.",
   "license": "MIT",
   "repository": {
@@ -29,6 +29,9 @@
   ],
   "engines": {
     "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "test": "node --test test/*.test.mjs"
