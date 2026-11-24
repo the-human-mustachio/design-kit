@@ -207,7 +207,7 @@ Node 22 or later.
 
 To release, raise `version` in `package.json`, commit, tag the commit `v<version>`, and push both. The Release
 workflow (`.github/workflows/release.yml`) tests the tag and publishes it to npm through npm's trusted publishing, with
-no token, and npm records the build's provenance.
+no token, and npm records the build's provenance. It then makes the tag's GitHub release, linked to the version on npm.
 
 ## Licence
 

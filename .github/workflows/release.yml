@@ -1,14 +1,15 @@
 name: Release
 
-# Publishes the package to npm when a v<version> tag is pushed. npm's trusted publishing lets this workflow publish
-# with no token (the package's npm settings name this file), and npm attaches the build's provenance.
+# Publishes the package to npm when a v<version> tag is pushed, then makes the tag's GitHub release, linked to npm.
+# npm's trusted publishing lets this workflow publish with no token (the package's npm settings name this file), and
+# npm attaches the build's provenance. Both steps skip what is already done, so a run can be repeated.
 on:
   push:
     tags: ['v*']
 
 permissions:
-  contents: read
-  id-token: write
+  contents: write   # the GitHub release
+  id-token: write   # npm's trusted publishing
 
 jobs:
   publish:
@@ -38,3 +39,20 @@ jobs:
           else
             npm publish
           fi
+      - name: The tag's GitHub release, linked to the version on npm
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "$GITHUB_REF_NAME already has a release"; exit 0
+          fi
+          name="$(node -p 'require("./package.json").name')"
+          version="$(node -p 'require("./package.json").version')"
+          cat > "$RUNNER_TEMP/notes.md" <<EOF
+          On npm: [$name@$version](https://www.npmjs.com/package/$name/v/$version), published by the Release workflow, with provenance.
+
+          \`\`\`bash
+          npm install --save-dev $name@$version
+          \`\`\`
+          EOF
+          gh release create "$GITHUB_REF_NAME" --verify-tag --title "design-kit $version" --notes-file "$RUNNER_TEMP/notes.md"
